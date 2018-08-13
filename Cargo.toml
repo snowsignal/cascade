@@ -5,5 +5,6 @@ authors = ["Jackson Lewis <st.japa6@gmail.com>"]
 description = "Dart-like cascade macro for Rust"
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/jacksoncoder/cascade"
 
 [dependencies]
