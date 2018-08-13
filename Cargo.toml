@@ -2,5 +2,8 @@
 name = "cascade"
 version = "0.1.0"
 authors = ["Jackson Lewis <st.japa6@gmail.com>"]
+description = "Dart-like cascade macro for Rust"
+license = "MIT"
+readme = "README.md"
 
 [dependencies]
