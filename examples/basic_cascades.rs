@@ -18,6 +18,23 @@ impl Person {
     }
 }
 
+#[derive(Clone, Debug)]
+struct Chain {
+    links: Vec<u32>
+}
+
+impl Chain {
+    fn blank() -> Chain {
+        Chain {
+            links: vec!()
+        }
+    }
+    fn add(mut self, link: u32) -> Self {
+        self.links.push(link);
+        self
+    }
+}
+
 fn main() {
   // Cascades can be used recursively!
   let people = cascade! {
@@ -65,6 +82,12 @@ fn main() {
     .. name = "James Smith".to_string();
     .. height = ((person.height as f32) * 0.8) as u32;
     | println!("'person' is now equal to: {:?}", person);
+  };
+  // As of version 1.1.2, you can also chain methods together. Observe:
+  let method_chain_example = cascade! {
+    ch: Chain::blank();
+    ..add(5).add(6).add(7); // In this case, ch is consumed here. So we have to shadow ch to avoid an error. Obviously, this isn't the most useful way to method-chain.
+    | let ch = ();
   };
   println!("People: {:?}, {:?}, {:?}, {:?}, {:?}", people, other_person, another_person, yet_another_person, one_more_person);
 }

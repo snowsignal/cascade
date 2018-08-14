@@ -18,10 +18,6 @@ macro_rules! cascade {
         $s;
         cascade!(@line $i, $($tail)*);
     };
-    (@line $i:ident, .. $q: ident ($($e: expr),*); $($tail: tt)*) => {
-        $i.$q ($($e),*);
-        cascade!(@line $i, $($tail)*);
-    };
     (@line $i: ident, .. $v: ident = $e: expr; $($tail: tt)*) => {
         $i.$v = $e;
         cascade!(@line $i, $($tail)*);
@@ -36,6 +32,10 @@ macro_rules! cascade {
     };
     (@line $i:ident, .. $v:ident *= $e:expr; $($tail:tt)*) => {
         $i.$v *= $e;
+        cascade!(@line $i, $($tail)*);
+    };
+    (@line $i:ident, .. $($q: ident ($($e: expr),*)).+; $($tail: tt)*) => {
+        $i.$($q($($e),*)).+;
         cascade!(@line $i, $($tail)*);
     };
     (@line $i:ident,) => {};
