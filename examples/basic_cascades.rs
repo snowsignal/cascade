@@ -83,7 +83,7 @@ fn main() {
     .. height = ((person.height as f32) * 0.8) as u32;
     | println!("'person' is now equal to: {:?}", person);
   };
-  // As of version 1.1.2, you can also chain methods together. Observe:
+  // As of version 0.1.2, you can also chain methods together. Observe:
   let method_chain_example = cascade! {
     ch: Chain::blank();
     ..add(5).add(6).add(7); // In this case, ch is consumed here. So we have to shadow ch to avoid an error. Obviously, this isn't the most useful way to method-chain.
