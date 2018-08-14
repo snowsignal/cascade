@@ -1,17 +1,17 @@
 #[macro_export]
 macro_rules! cascade {
-    ($e: expr; $($tail: tt)*) => {
-        {
-            let mut __tmp = $e;
-            cascade!(@line __tmp, $($tail)*);
-            __tmp
-        };
-    };
     ($i:ident : $e: expr; $($tail: tt)*) => {
         {
             let mut $i = $e;
             cascade!(@line $i, $($tail)*);
             $i
+        };
+    };
+    ($e: expr; $($tail: tt)*) => {
+        {
+            let mut __tmp = $e;
+            cascade!(@line __tmp, $($tail)*);
+            __tmp
         };
     };
     (@line $i:ident, | $s: stmt; $($tail: tt)*) => {
