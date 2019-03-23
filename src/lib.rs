@@ -38,6 +38,10 @@ macro_rules! cascade {
         $i.$($q($($e),*)).+;
         cascade!(@line $i, $($tail)*);
     };
+    (@line $i:ident, .. $($q: ident ($($e: expr),*)).+?; $($tail: tt)*) => {
+        $i.$($q($($e),*)).+?;
+        cascade!(@line $i, $($tail)*);
+    };
     (@line $i:ident,) => {};
     () => {}
 }

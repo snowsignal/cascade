@@ -89,5 +89,17 @@ fn main() {
     ..add(5).add(6).add(7); // In this case, ch is consumed here. So we have to shadow ch to avoid an error. Obviously, this isn't the most useful way to method-chain.
     | let ch = ();
   };
+
+  option_cascade_test();
+
   println!("People: {:?}, {:?}, {:?}, {:?}, {:?}", people, other_person, another_person, yet_another_person, one_more_person);
+}
+
+// As of version 0.1.3, you can use the ? operator after a .. statement.
+fn option_cascade_test() -> Result<Result<(), ()>, ()> {
+    let question_mark_operator_example: Result<Result<(), ()>, ()> = cascade! {
+    Ok(Ok(()));
+    ..unwrap()?;
+  };
+  return question_mark_operator_example;
 }
