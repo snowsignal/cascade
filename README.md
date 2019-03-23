@@ -76,5 +76,27 @@ fn main() {
 In addition, cascades make it easier to design fluent interfaces.
 No more returning `self` with every single function!
 
+### Changelog
+**0.1.3**: The ? operator now works with cascades, for scenarios like this:
+```rust
+fn file_read() -> Result<SomeFileClass, ErrorMsg> {
+    cascade! {
+      SomeFileClass::create_file_reader("test.txt");
+      ..load()?;
+      ..check_validity()?;
+    }
+}
+```
+
+**0.1.2**: You can now chain methods together, like this:
+```rust
+fn chain_example() {
+  cascade! {
+    FnChainTest::new();
+    ..chain().chain().chain();
+  }
+}
+```
+
 ### Credits
 Written by Jackson Lewis
