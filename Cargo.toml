@@ -1,10 +1,10 @@
 [package]
 name = "cascade"
 version = "0.1.3"
-authors = ["Jackson Lewis <st.japa6@gmail.com>"]
+authors = ["Jackson Lewis <inquisitivepenguin@protonmail.com>"]
 description = "Dart-like cascade macro for Rust"
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/jacksoncoder/cascade"
+repository = "https://github.com/inquisitivepenguin/cascade"
 
 [dependencies]
