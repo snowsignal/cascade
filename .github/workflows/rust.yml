@@ -12,4 +12,4 @@ jobs:
     - name: Build
       run: cargo build --verbose
     - name: Run examples
-      run: cargo run --example basic_example
+      run: cargo run --example basic_cascades
