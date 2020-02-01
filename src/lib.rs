@@ -91,7 +91,7 @@ macro_rules! cascade {
         };
     };
     ($e: expr; $($tail: tt)*) => {
-        $crate::cascade(__tmp: $e; $($tail)*)
+        $crate::cascade!(__tmp: $e; $($tail)*)
     };
     (@line $i:ident, | $s: stmt; $($tail: tt)*) => {
         $s;
