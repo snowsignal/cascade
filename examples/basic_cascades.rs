@@ -72,22 +72,22 @@ fn main() {
      people[0].clone();
      .. name = "James Smith".to_string();
      .. age = 27;
-     | println!("Cascades in Rust are cool!");
+     println!("Cascades in Rust are cool!");
      .. height -= 3;
   };
   // You can bind the initial value of the cascade to an identifier, which reflects the current state of the cascaded value.
   let one_more_person = cascade! {
     person: people[0].clone();
-    | println!("'person' was equal to: {:?}", person);
+    println!("'person' was equal to: {:?}", person);
     .. name = "James Smith".to_string();
     .. height = ((person.height as f32) * 0.8) as u32;
-    | println!("'person' is now equal to: {:?}", person);
+    println!("'person' is now equal to: {:?}", person);
   };
   // As of version 0.1.2, you can also chain methods together. Observe:
   let method_chain_example = cascade! {
     ch: Chain::blank();
     ..add(5).add(6).add(7); // In this case, ch is consumed here. So we have to shadow ch to avoid an error. Obviously, this isn't the most useful way to method-chain.
-    | let ch = ();
+    let ch = ();
   };
 
   option_cascade_test();
