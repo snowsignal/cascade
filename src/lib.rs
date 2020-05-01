@@ -32,8 +32,8 @@
 /// let hash_map = cascade! {
 ///   HashMap::new();
 ///   ..insert("foo", "bar");
-///   | println!("Look! You can put statements in a cascade!");
-///   | for i in 0..3 {
+///   println!("Look! You can put statements in a cascade!");
+///   for i in 0..3 {
 ///     println!("You can put loops in here too! Make sure to put a semicolon at the end!");
 ///   };
 /// };
@@ -46,7 +46,7 @@
 /// let vector = cascade! {
 ///   v: Vec::new();
 ///   ..push(1);
-///   | println!("The vector now has {} element(s).", v.len());
+///   println!("The vector now has {} element(s).", v.len());
 ///   ..push(2);
 /// };
 /// ```
@@ -70,32 +70,19 @@
 /// ```
 ///
 /// More examples of the cascade macro can be found in the examples folder on the Github repository.
-///
-/// # Common Mistakes
-/// Sometimes, you might get a weird error while using this macro. Most likely it will be some
-/// variation of `no rules expected the token '@'`. Since these errors are notoriously hard to debug,
-/// here are some common mistakes one might make that will result in this error being thrown:
-/// 1. **Not putting a semicolon at the end of a line.** Every single cascade statement must end
-/// with a semicolon. Yes, even loops! This is because the parser needs to know when the line ends and the
-/// next line begins, and the semicolon is used as the delimiter.
-/// 2. **Not putting a operator at the beginning of a line.** Even if you are just writing a statement,
-/// you need to put the `|` operator at the beginning. Once again, this is due to the way Rust parses macros.
-/// It also means that each line of the cascade macro is consistent, with an `<operator> <statement>;` syntax.
 #[macro_export]
 macro_rules! cascade {
     ($i:ident : $e: expr; $($tail: tt)*) => {
         {
             let mut $i = $e;
-            $crate::cascade!(@line $i, $($tail)*);
+            cascade!(@line $i, $($tail)*);
             $i
         };
     };
     ($e: expr; $($tail: tt)*) => {
-        $crate::cascade!(__tmp: $e; $($tail)*)
-    };
-    (@line $i:ident, | $s: stmt; $($tail: tt)*) => {
-        $s;
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            cascade!(__tmp : $e; $($tail)*)
+        };
     };
     (@line $i: ident, .. $v: ident = $e: expr; $($tail: tt)*) => {
         $i.$v = $e;
@@ -120,6 +107,15 @@ macro_rules! cascade {
     (@line $i:ident, .. $($q: ident ($($e: expr),*)).+?; $($tail: tt)*) => {
         $i.$($q($($e),*)).+?;
         $crate::cascade!(@line $i, $($tail)*);
+    };
+    (@line $i:ident, $s: stmt; $($tail: tt)*) => {
+        $s
+        cascade!(@line $i, $($tail)*);
+    };
+    // This is for backwards compatibility with older versions
+    (@line $i:ident, | $s: stmt; $($tail: tt)*) => {
+        $s;
+        cascade!(@line $i, $($tail)*);
     };
     (@line $i:ident,) => {};
     () => {}
