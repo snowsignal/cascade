@@ -35,6 +35,7 @@ impl Chain {
     }
 }
 
+#[allow(unused)]
 fn main() {
   // Cascades can be used recursively!
   let people = cascade! {
@@ -90,14 +91,22 @@ fn main() {
     let ch = ();
   };
 
-  option_cascade_test();
+  // You can have nested blocks within the cascade
+  let block_example = cascade! {
+    Vec::new();
+    {
+      ..push(1);
+    };
+    ..push(2);
+  };
 
-  println!("People: {:?}, {:?}, {:?}, {:?}, {:?}", people, other_person, another_person, yet_another_person, one_more_person);
+
+  option_cascade_test().unwrap().unwrap();
 }
 
 // As of version 0.1.3, you can use the ? operator after a .. statement.
 fn option_cascade_test() -> Result<Result<(), ()>, ()> {
-    let question_mark_operator_example: Result<Result<(), ()>, ()> = cascade! {
+  let question_mark_operator_example: Result<Result<(), ()>, ()> = cascade! {
     Ok(Ok(()));
     ..unwrap()?;
   };

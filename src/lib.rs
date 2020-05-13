@@ -108,6 +108,10 @@ macro_rules! cascade {
         $i.$($q($($e),*)).+?;
         $crate::cascade!(@line $i, $($tail)*);
     };
+    (@line $i:ident, { $($t:tt)* }; $($tail: tt)*) => {
+        { $crate::cascade!(@line $i, $($t)*); }
+        $crate::cascade!(@line $i, $($tail)*);
+    };
     (@line $i:ident, $s: stmt; $($tail: tt)*) => {
         $s
         cascade!(@line $i, $($tail)*);
