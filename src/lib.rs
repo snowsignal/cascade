@@ -24,7 +24,7 @@
 /// you can't run a method on a struct with the `..` operator if the method takes `self` or
 /// `mut self`. But `&self` or `&mut self` works fine.
 ///
-/// If you want to put statements within the macro, you can use the `|` operator:
+/// You can also put statements without a `..` in a cascade macro:
 /// ```
 /// use cascade::cascade;
 /// use std::collections::HashMap;
@@ -39,12 +39,12 @@
 /// };
 /// ```
 ///
-/// If you need to reference the expression inside a cascade, you can name it and then use it:
+/// If you need to reference the expression inside a cascade, you can name it using `let`:
 /// ```
 /// use cascade::cascade;
 ///
 /// let vector = cascade! {
-///   v: Vec::new();
+///   let v = Vec::new();
 ///   ..push(1);
 ///   println!("The vector now has {} element(s).", v.len());
 ///   ..push(2);
@@ -72,55 +72,83 @@
 /// More examples of the cascade macro can be found in the examples folder on the Github repository.
 #[macro_export]
 macro_rules! cascade {
-    ($i:ident : $e: expr; $($tail: tt)*) => {
+    (let _ : $t:ty = $e: expr; $($tail: tt)*) => {
+        cascade!(let __tmp: $t = $e; $($tail)*)
+    };
+    (let $i:ident : $t:ty = $e: expr; $($tail: tt)*) => {
         {
-            let mut $i = $e;
-            cascade!(@line $i, $($tail)*);
-            $i
-        };
+            let mut $i: $t = $e;
+            cascade!(@line $i, $($tail)*)
+        }
+    };
+    (let $i:ident = $e: expr; $($tail: tt)*) => {
+      {
+        let mut $i = $e;
+        cascade!(@line $i, $($tail)*)
+      }
     };
     ($e: expr; $($tail: tt)*) => {
-        {
-            cascade!(__tmp : $e; $($tail)*)
-        };
+        cascade!(let __tmp = $e; $($tail)*)
     };
     (@line $i: ident, .. $v: ident = $e: expr; $($tail: tt)*) => {
-        $i.$v = $e;
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            $i.$v = $e;
+            $crate::cascade!(@line $i, $($tail)*)
+        }
     };
     (@line $i:ident, .. $v:ident += $e:expr; $($tail:tt)*) => {
-        $i.$v += $e;
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            $i.$v += $e;
+            $crate::cascade!(@line $i, $($tail)*)
+        }
     };
     (@line $i:ident, .. $v:ident -= $e:expr; $($tail:tt)*) => {
-        $i.$v -= $e;
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            $i.$v -= $e;
+            $crate::cascade!(@line $i, $($tail)*)
+        }
     };
     (@line $i:ident, .. $v:ident *= $e:expr; $($tail:tt)*) => {
-        $i.$v *= $e;
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            $i.$v *= $e;
+            $crate::cascade!(@line $i, $($tail)*)
+        }
     };
     (@line $i:ident, .. $($q: ident ($($e: expr),*)).+; $($tail: tt)*) => {
-        $i.$($q($($e),*)).+;
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            $i.$($q($($e),*)).+;
+            $crate::cascade!(@line $i, $($tail)*)
+        }
     };
     (@line $i:ident, .. $($q: ident ($($e: expr),*)).+?; $($tail: tt)*) => {
-        $i.$($q($($e),*)).+?;
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            $i.$($q($($e),*)).+?;
+            $crate::cascade!(@line $i, $($tail)*)
+        }
     };
     (@line $i:ident, { $($t:tt)* }; $($tail: tt)*) => {
-        { $crate::cascade!(@line $i, $($t)*); }
-        $crate::cascade!(@line $i, $($tail)*);
+        {
+            { $crate::cascade!(@line $i, $($t)*); }
+            $crate::cascade!(@line $i, $($tail)*)
+        }
     };
     (@line $i:ident, $s: stmt; $($tail: tt)*) => {
-        $s
-        cascade!(@line $i, $($tail)*);
+        {
+            $s
+            cascade!(@line $i, $($tail)*)
+        }
     };
-    // This is for backwards compatibility with older versions
-    (@line $i:ident, | $s: stmt; $($tail: tt)*) => {
-        $s;
-        cascade!(@line $i, $($tail)*);
+    (@line $i:ident, { $($t:tt)* }) => {
+        { $crate::cascade!(@line $i, $($t)*) }
     };
-    (@line $i:ident,) => {};
+    (@line $i:ident, .. $($q: ident ($($e: expr),*)).+) => {
+        $i.$($q($($e),*)).+
+    };
+    (@line $i:ident, $e:expr) => {
+        $e
+    };
+    (@line $i:ident,) => {
+        $i
+    };
     () => {}
 }
