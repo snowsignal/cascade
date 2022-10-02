@@ -140,4 +140,4 @@ fn chain_example() {
 ```
 
 ### Credits
-Written by Jackson Lewis
+Written by Jane Lewis
