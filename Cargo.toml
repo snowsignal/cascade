@@ -1,6 +1,6 @@
 [package]
 name = "cascade"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Jane Lewis <inquisitivepenguin@protonmail.com>"]
 description = "Dart-like cascade macro for Rust"
 license = "MIT"
